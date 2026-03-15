@@ -1,6 +1,13 @@
 #include <stdio.h>
 #include "pico/stdlib.h"
 
+/*
+ * Connect PIN_DIALLING to D3 (brown).
+ * Connect PIN_PULSE to D5 (orange).
+ * Connect GND to D4 (pink).
+ * PIN_DIALLING will be shorted to GND when dialling, PIN_PULSE will pulse high for each digit.
+*/
+
 #define PIN_DIALLING 16
 #define PIN_PULSE 17
 
@@ -17,7 +24,7 @@ int main()
 
     int dialled_digit = -1;
 
-    printf("\nStarted.\n");
+    printf("\nStarted dialling test.\n");
 
     while (true) {
         // Wait for dialling signal to go low
