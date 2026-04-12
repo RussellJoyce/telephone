@@ -41,7 +41,14 @@ int main()
 
     dfp_err_t err;
 
-    // sleep_ms(1000);
+    sleep_ms(1000);
+
+    // Clear out any data in the UART buffer, such as the DFPlayer power on message
+    // TODO: Properly reset the DFPlayer on startup, and check for the power on message
+    while (uart_is_readable(DFPLAYER_UART_ID))
+    {
+        uart_getc(DFPLAYER_UART_ID);
+    }
 
     printf("\nSetting volume...\n");
     err = dfp_set_volume(DFPLAYER_UART_ID, true, 10);
