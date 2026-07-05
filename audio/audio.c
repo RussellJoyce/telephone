@@ -19,7 +19,9 @@ void check_error(dfp_err_t err)
     }
     else
     {
-        printf("Error: %d\n", err);
+        printf("Error: %d %s\n", err, dfp_err_string(err));
+
+        // Sleep forever
         sleep_ms(UINT32_MAX);
     }
 }
@@ -37,18 +39,39 @@ int main()
     gpio_set_dir(PIN_LED, GPIO_OUT);
     gpio_put(PIN_LED, false);
 
-    printf("\nStarted audio test.\n");
+    printf("\n\n-------------------------------\n");
+    printf("Started audio test.\n");
 
     dfp_err_t err;
 
     sleep_ms(1000);
 
-    // Clear out any data in the UART buffer, such as the DFPlayer power on message
-    // TODO: Properly reset the DFPlayer on startup, and check for the power on message
-    while (uart_is_readable(DFPLAYER_UART_ID))
+    // Clear UART buffer and read any pending status messages (e.g. power on)
+    printf("\nChecking for device messages...\n");
+    dfp_message_t message = DFP_MSG_NONE;
+    do
     {
-        uart_getc(DFPLAYER_UART_ID);
-    }
+        uint16_t param;
+        err = dfp_get_message(DFPLAYER_UART_ID, &message, &param, 200);
+        check_error(err);
+        printf("Received message: 0x%hhx (%hu)\n", message, param);
+    } while (message != DFP_MSG_NONE);
+
+    printf("\nResetting module...\n");
+    err = dfp_reset(DFPLAYER_UART_ID, true);
+    check_error(err);
+
+    sleep_ms(1000);
+
+    // Clear UART buffer and read any pending status messages (e.g. power on)
+    printf("\nChecking for device messages...\n");
+    do
+    {
+        uint16_t param;
+        err = dfp_get_message(DFPLAYER_UART_ID, &message, &param, 200);
+        check_error(err);
+        printf("Received message: 0x%hhx (%hu)\n", message, param);
+    } while (message != DFP_MSG_NONE);
 
     printf("\nSetting volume...\n");
     err = dfp_set_volume(DFPLAYER_UART_ID, true, 10);
@@ -66,9 +89,19 @@ int main()
     err = dfp_play_track_root(DFPLAYER_UART_ID, true, 2);
     check_error(err);
 
-    sleep_ms(5000);
+    while (true)
+    {
+        sleep_ms(500);
+        dfp_message_t message;
+        uint16_t param;
+        err = dfp_get_message(DFPLAYER_UART_ID, &message, &param, 500);
+        check_error(err);
+        printf("Received message: 0x%hhx (%hu)\n", message, param);
+    }
 
-    printf("\nStopping playback...\n");
-    err = dfp_stop(DFPLAYER_UART_ID, true);
-    check_error(err);
+    // sleep_ms(5000);
+
+    // printf("\nStopping playback...\n");
+    // err = dfp_stop(DFPLAYER_UART_ID, true);
+    // check_error(err);
 }

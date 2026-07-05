@@ -5,6 +5,11 @@
 #include "dfplayer.h"
 #include "dfplayer_ll.h"
 
+dfp_err_t dfp_reset(uart_inst_t *uart, bool feedback)
+{
+    return dfp_send_command(uart, DFP_CMD_RESET, 0, feedback);
+}
+
 dfp_err_t dfp_play(uart_inst_t *uart, bool feedback)
 {
     return dfp_send_command(uart, DFP_CMD_PLAY, 0, feedback);
@@ -103,5 +108,31 @@ dfp_err_t dfp_query_status(uart_inst_t *uart, bool feedback, dfp_playback_status
     dfp_err_t err = dfp_send_recv_command(uart, DFP_CMD_QUERY_STATUS, &recv_param, feedback);
     *playback_status = recv_param & 0xFF;
     *device_status = recv_param >> 8;
+    return err;
+}
+
+dfp_err_t dfp_get_message(uart_inst_t *uart, dfp_message_t *message, uint16_t *param, uint32_t timeout_ms)
+{
+    dfp_recv_t status;
+    dfp_err_t err = dfp_recv_async_status(uart, &status, param, timeout_ms);
+
+    // Timeout means no message was received
+    if (err == DFP_ERR_READ_TIMEOUT)
+    {
+        if (message != NULL)
+        {
+            *message = DFP_MSG_NONE;
+        }
+        if (param != NULL)
+        {
+            *param = 0;
+        }
+        return DFP_ERR_OK;
+    }
+
+    if (message != NULL)
+    {
+        *message = status;
+    }
     return err;
 }

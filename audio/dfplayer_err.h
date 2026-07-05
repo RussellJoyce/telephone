@@ -1,0 +1,74 @@
+#pragma once
+
+typedef enum
+{
+    DFP_ERR_OK = 0x00,
+    DFP_ERR_BAD_ARGUMENT,
+    DFP_ERR_BUSY,
+    DFP_ERR_SLEEPING,
+    DFP_ERR_SERIAL,
+    DFP_ERR_SENT_CHECKSUM_BAD,
+    DFP_ERR_RECEIVED_CHECKSUM_BAD,
+    DFP_ERR_TRACK_OUT_OF_SCOPE,
+    DFP_ERR_TRACK_NOT_FOUND,
+    DFP_ERR_INSERTION_FAILED,
+    DFP_ERR_SD_READ_FAILED,
+    DFP_ERR_UNEXPECTED_DATA,
+    DFP_ERR_READ_TIMEOUT,
+    DFP_ERR_INVALID_MSG_START_BYTE,
+    DFP_ERR_INVALID_MSG_END_BYTE,
+    DFP_ERR_INVALID_MSG_VERSION,
+    DFP_ERR_INVALID_MSG_LENGTH,
+    DFP_ERR_INVALID_MSG_CHECKSUM,
+    DFP_ERR_UNKNOWN_DATA,
+    DFP_ERR_UNKNOWN_ERROR,
+} dfp_err_t;
+
+static inline const char *dfp_err_string(dfp_err_t err)
+{
+    switch (err)
+    {
+    case DFP_ERR_OK:
+        return "DFP_ERR_OK";
+    case DFP_ERR_BAD_ARGUMENT:
+        return "DFP_ERR_BAD_ARGUMENT";
+    case DFP_ERR_BUSY:
+        return "DFP_ERR_BUSY";
+    case DFP_ERR_SLEEPING:
+        return "DFP_ERR_SLEEPING";
+    case DFP_ERR_SERIAL:
+        return "DFP_ERR_SERIAL";
+    case DFP_ERR_SENT_CHECKSUM_BAD:
+        return "DFP_ERR_SENT_CHECKSUM_BAD";
+    case DFP_ERR_RECEIVED_CHECKSUM_BAD:
+        return "DFP_ERR_RECEIVED_CHECKSUM_BAD";
+    case DFP_ERR_TRACK_OUT_OF_SCOPE:
+        return "DFP_ERR_TRACK_OUT_OF_SCOPE";
+    case DFP_ERR_TRACK_NOT_FOUND:
+        return "DFP_ERR_TRACK_NOT_FOUND";
+    case DFP_ERR_INSERTION_FAILED:
+        return "DFP_ERR_INSERTION_FAILED";
+    case DFP_ERR_SD_READ_FAILED:
+        return "DFP_ERR_SD_READ_FAILED";
+    case DFP_ERR_UNEXPECTED_DATA:
+        return "DFP_ERR_UNEXPECTED_DATA";
+    case DFP_ERR_READ_TIMEOUT:
+        return "DFP_ERR_READ_TIMEOUT";
+    case DFP_ERR_INVALID_MSG_START_BYTE:
+        return "DFP_ERR_INVALID_MSG_START_BYTE";
+    case DFP_ERR_INVALID_MSG_END_BYTE:
+        return "DFP_ERR_INVALID_MSG_END_BYTE";
+    case DFP_ERR_INVALID_MSG_VERSION:
+        return "DFP_ERR_INVALID_MSG_VERSION";
+    case DFP_ERR_INVALID_MSG_LENGTH:
+        return "DFP_ERR_INVALID_MSG_LENGTH";
+    case DFP_ERR_INVALID_MSG_CHECKSUM:
+        return "DFP_ERR_INVALID_MSG_CHECKSUM";
+    case DFP_ERR_UNKNOWN_DATA:
+        return "DFP_ERR_UNKNOWN_DATA";
+    case DFP_ERR_UNKNOWN_ERROR:
+        return "DFP_ERR_UNKNOWN_ERROR";
+    default:
+        return "Unknown error";
+    }
+}

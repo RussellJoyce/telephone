@@ -4,7 +4,7 @@
 #include <stdbool.h>
 #include "pico/stdlib.h"
 #include "hardware/uart.h"
-#include "dfplayer.h"
+#include "dfplayer_err.h"
 
 typedef enum
 {
@@ -72,3 +72,4 @@ typedef enum
 dfp_err_t dfp_send_command(uart_inst_t *uart, dfp_cmd_t cmd, uint16_t param, bool feedback);
 dfp_err_t dfp_recv_command(uart_inst_t *uart, dfp_cmd_t cmd, uint16_t *param);
 dfp_err_t dfp_send_recv_command(uart_inst_t *uart, dfp_cmd_t cmd, uint16_t *param, bool feedback);
+dfp_err_t dfp_recv_async_status(uart_inst_t *uart, dfp_recv_t *status, uint16_t *param, uint32_t timeout_ms);

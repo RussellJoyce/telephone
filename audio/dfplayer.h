@@ -4,6 +4,7 @@
 #include <stdbool.h>
 #include "pico/stdlib.h"
 #include "hardware/uart.h"
+#include "dfplayer_err.h"
 
 #define DFP_BAUD_RATE 9600
 
@@ -42,22 +43,16 @@ typedef enum
 
 typedef enum
 {
-    DFP_ERR_OK = 0x00,
-    DFP_ERR_BAD_ARGUMENT,
-    DFP_ERR_BUSY,
-    DFP_ERR_SLEEPING,
-    DFP_ERR_SERIAL,
-    DFP_ERR_SENT_CHECKSUM_BAD,
-    DFP_ERR_RECEIVED_CHECKSUM_BAD,
-    DFP_ERR_TRACK_OUT_OF_SCOPE,
-    DFP_ERR_TRACK_NOT_FOUND,
-    DFP_ERR_INSERTION_FAILED,
-    DFP_ERR_SD_READ_FAILED,
-    DFP_ERR_UNEXPECTED_DATA,
-    DFP_ERR_UNKNOWN_DATA,
-    DFP_ERR_UNKNOWN_ERROR,
-} dfp_err_t;
+    DFP_MSG_NONE = 0x00,                    // No message received
+    DFP_MSG_STORAGE_DEVICE_INSERTED = 0x3A, // Storage device was plugged in
+    DFP_MSG_STORAGE_DEVICE_REMOVED = 0x3B,  // Storage device was removed
+    DFP_MSG_PLAYBACK_FINISHED_USB = 0x3C,   // Track finished playing from USB
+    DFP_MSG_PLAYBACK_FINISHED_SD = 0x3D,    // Track finished playing from SD
+    DFP_MSG_POWER_ON = 0x3F,                // Module powered on
+    DFP_MSG_ERROR = 0x40,                   // Error data
+} dfp_message_t;
 
+dfp_err_t dfp_reset(uart_inst_t *uart, bool feedback);
 dfp_err_t dfp_play(uart_inst_t *uart, bool feedback);
 dfp_err_t dfp_pause(uart_inst_t *uart, bool feedback);
 dfp_err_t dfp_stop(uart_inst_t *uart, bool feedback);
@@ -75,3 +70,5 @@ dfp_err_t dfp_set_volume(uart_inst_t *uart, bool feedback, uint8_t volume);
 
 dfp_err_t dfp_query_volume(uart_inst_t *uart, bool feedback, uint8_t *volume);
 dfp_err_t dfp_query_status(uart_inst_t *uart, bool feedback, dfp_playback_status_t *playback_status, dfp_device_status_t *device_status);
+
+dfp_err_t dfp_get_message(uart_inst_t *uart, dfp_message_t *message, uint16_t *param, uint32_t timeout_ms);
