@@ -25,38 +25,35 @@ endif()
 # ====================================================================================
 set(PICO_BOARD pico CACHE STRING "Board type")
 
-# Pull in Raspberry Pi Pico SDK and extras (must be before project)
+# Pull in Raspberry Pi Pico SDK (must be before project)
 include(pico_sdk_import.cmake)
 
-# Set up pico-extras library
-set(PICO_EXTRAS_PATH ${CMAKE_CURRENT_LIST_DIR}/../lib/pico-extras)
-include(pico_extras_import.cmake)
-
-project(handset C CXX ASM)
+project(audio C CXX ASM)
 
 # Initialise the Raspberry Pi Pico SDK
 pico_sdk_init()
 
+add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/../../lib/dfplayer-pico dfplayer_pico)
+
 # Add executable. Default name is the project name, version 0.1
 
-add_executable(handset handset.c )
+add_executable(audio audio.c)
 
-pico_set_program_name(handset "handset")
-pico_set_program_version(handset "0.1")
+pico_set_program_name(audio "audio")
+pico_set_program_version(audio "0.1")
 
 # Modify the below lines to enable/disable output over UART/USB
-pico_enable_stdio_uart(handset 1)
-pico_enable_stdio_usb(handset 0)
+pico_enable_stdio_uart(audio 1)
+pico_enable_stdio_usb(audio 0)
 
-# Add the standard library and hardware sleep library to the build
-target_link_libraries(handset
+# Add the standard library to the build
+target_link_libraries(audio
         pico_stdlib
-        hardware_sleep)
+        dfplayer_pico)
 
 # Add the standard include files to the build
-target_include_directories(handset PRIVATE
+target_include_directories(audio PRIVATE
         ${CMAKE_CURRENT_LIST_DIR}
 )
 
-pico_add_extra_outputs(handset)
-
+pico_add_extra_outputs(audio)
